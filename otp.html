@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='otp_styles.css') }}">
+    <title>OTP Verification</title>
+    <style>
+        
+        .success-alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+        }
+        .danger-alert {
+        display: none; /* Hide the alert by default */
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background-color: #ff4d4d; /* Red background color */
+        color: white;
+        padding: 10px;
+        border-radius: 5px;
+        font-weight: bold;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+    }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Enter OTP</h1>
+        <p>Please enter the OTP sent to your mobile number</p>
+        <form id="otpForm">
+            <div class="otp-input">
+                <input type="text" id="otp" name="otp" maxlength="6" required>
+            </div>
+            <button type="submit">Verify OTP</button>
+        </form>
+    </div>
+
+    <!-- Success alert -->
+    <div class="success-alert" id="successAlert">
+        OTP verification successful.
+    </div>
+    <div class="danger-alert" id="dangerAlert">
+         OTP verification failed. Please enter the correct OTP.
+    </div>
+    <script>
+        document.getElementById('otpForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const enteredOTP = document.getElementById('otp').value;
+
+        
+            if (enteredOTP === "123456") {
+                // Display the success alert
+                const successAlert = document.getElementById('successAlert');
+                successAlert.style.display = 'block';
+
+                // Redirect to the next page after a delay (e.g., 2 seconds)
+                setTimeout(function () {
+                    window.location.href = '/face_capture';
+                }, 2000);
+            } else {
+                const dangerAlert = document.getElementById('dangerAlert');
+                dangerAlert.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

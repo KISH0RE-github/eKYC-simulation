@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Aadhar Card Upload</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Upload Aadhar Card Front & Back Images (JPEG only)</h1>
+        <p class="regulations"><b>Please ensure image clarity</b></p>
+        <form id="imageForm" action="/process" method="POST" enctype="multipart/form-data">
+            <div class="image-upload">
+                <label for="image1">Aadhar Card Front (JPEG only):</label>
+                <input type="file" id="image1" name="image1" accept=".jpeg, .jpg" required style="display: none;">
+                <button type="button" onclick="document.getElementById('image1').click()">Select Image</button>
+                <img id="image1-preview" src="" style="max-width: 100%; max-height: 200px; display: none;">
+            </div>
+            <div class="image-upload">
+                <label for="image2">Aadhar Card Back (JPEG only):</label>
+                <input type="file" id="image2" name="image2" accept=".jpeg, .jpg" required style="display: none;">
+                <button type="button" onclick="document.getElementById('image2').click()">Select Image</button>
+                <img id="image2-preview" src="" style="max-width: 100%; max-height: 200px; display: none;">
+            </div>
+            <button type="submit">Upload</button>
+        </form>
+        
+    </div>
+
+    <script>
+        
+        function handleFileInput(inputElement, previewElement) {
+    const fileInput = document.getElementById(inputElement);
+    const preview = document.getElementById(previewElement);
+
+    fileInput.addEventListener('change', function () {
+        if (fileInput.files.length > 0) {
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+                fileInput.disabled = true;
+            };
+
+            reader.readAsDataURL(file);
+        }
+    });
+}
+
+
+handleFileInput('image1', 'image1-preview');
+handleFileInput('image2', 'image2-preview');
+
+
+document.getElementById('imageForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+    formData.append('image1', document.getElementById('image1').files[0]);
+    formData.append('image2', document.getElementById('image2').files[0]);
+
+    fetch('/process', {
+        method: 'POST',
+        body: formData,
+    })
+    .then(response => response.text())
+    .then(result => {
+        if (result != "Mismatch") {
+            window.location.href = '/matched';
+    } else {
+        console.log(result);
+    }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+});
+
+    </script>
+</body>
+</html>

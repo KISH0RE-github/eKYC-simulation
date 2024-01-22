@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Camera Capture</title>
+    <style>
+        
+        .success-alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+        }
+        .danger-alert {
+        display: none; /* Hide the alert by default */
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background-color: #ff4d4d; /* Red background color */
+        color: white;
+        padding: 10px;
+        border-radius: 5px;
+        font-weight: bold;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+    }
+    </style>
+    <style>
+        
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        #camera-container {
+            margin: 20px;
+            border: 2px solid #333;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        #camera-feed {
+            width: 320px; /* Adjust the width as needed */
+            height: 240px; /* Adjust the height as needed */
+            display: block;
+            margin: 0 auto;
+        }
+
+        #buttons-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #capture-button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #0074d9;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #submit-button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #2ecc40;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: none;
+        }
+
+        #take-another-button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #ff4136;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: none;
+        }
+
+        #canvas-container {
+            display: none;
+        }
+
+        #canvas {
+            width: 320px; /* Adjust the width as needed */
+            height: 240px; /* Adjust the height as needed */
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 30%;
+            text-align: center;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        #saveImage {
+            background-color: #0074d9;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Face Capture</h1>
+    <div id="camera-container">
+        <video id="camera-feed" autoplay playsinline></video>
+    </div>
+    <div id="buttons-container">
+        <button id="capture-button">Capture Photo</button>
+        <button id="submit-button">Submit</button>
+        <button id="take-another-button">Take Another</button>
+    </div>
+    <div id="canvas-container">
+        <canvas id="canvas"></canvas>
+    </div>
+    <div class="success-alert" id="successAlert">
+       Image upload successful.
+    </div>
+    <div class="danger-alert" id="dangerAlert">
+        Image upload failed. 
+    </div>
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p>Enter Application Number: <input type="text" id="appNumber"></p>
+            <button id="saveImage">Save Image</button>
+        </div>
+    </div>
+
+    script>
+    const video = document.getElementById('camera-feed');
+    const captureButton = document.getElementById('capture-button');
+    const submitButton = document.getElementById('submit-button');
+    const takeAnotherButton = document.getElementById('take-another-button');
+    const canvasContainer = document.getElementById('canvas-container');
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+
+    async function setupCamera() {
+        const stream = await navigator.mediaDevices.getUserMedia({ 'video': true });
+        video.srcObject = stream;
+    }
+
+    async function capturePhoto() {
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        canvasContainer.style.display = 'block';
+        video.style.display = 'none';
+        captureButton.style.display = 'none';
+        submitButton.style.display = 'block';
+        takeAnotherButton.style display = 'block';
+    }
+
+    function resetCamera() {
+        canvasContainer.style.display = 'none';
+        video.style.display = 'block';
+        captureButton.style.display = 'block';
+        submitButton.style.display = 'none';
+        takeAnotherButton.style.display = 'none';
+    }
+
+    setupCamera();
+
+    captureButton.addEventListener('click', capturePhoto);
+    takeAnotherButton.addEventListener('click', resetCamera);
+
+    submitButton.addEventListener('click', () => {
+        saveImage();
+    });
+
+    function saveImage() {
+        canvas.toBlob(function (blob) {
+            const formData = new FormData();
+            formData.append('imageData', blob, 'image.jpg');
+
+            fetch('/save_image', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Image upload successful');
+                } else {
+                    alert('Image upload failed');
+                }
+            })
+            .catch(error => {
+                console.error('Image upload error:', error);
+                alert('Image upload failed');
+            });
+        }, 'image/jpeg');
+    }
+</script>
+</body>
+</html>
