@@ -1,5 +1,10 @@
+authors:
+      Kishore K G 22BRS1095 kishore.kg2022@vitstudent.ac.in , Naga Rithesh 22BRS1006 naga.rithesh2022@vitstudent.ac.in
+
 eKYC-simulation
-We simulated the whole eKCY process with a website, PostgreSQL online database , C and HTML programs
+We simulated the whole eKCY process with a website, PostgreSQL online database , C and HTML programs .
+
+ARCHITECTURE:
 
 HTML Website: The user interface of the e-KYC system is built on HTML websites, which provide a user-friendly platform for customers to engage in the identity verification process. These websites are frontend of this project and point of contact for users and guide them through the various steps of the verification process. Users are prompted to upload photo of their Aadhar card and use the website to take a photo of their face while also providing user instructions.
 
